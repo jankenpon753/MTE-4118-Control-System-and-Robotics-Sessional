@@ -1,0 +1,173 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, total={6.5in, 9.4in}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/output/} }
+\usepackage{caption}
+\usepackage[english]{babel}
+\usepackage{titling}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{placeins}
+\usepackage{parskip}
+
+% \usepackage{lipsum}
+
+\title{Experiment 3\\
+\textbf{Speed Control of DC Motor Using Closed Loop Feedback Control With PID Controller}}
+\author{}
+\date{}
+
+\pagenumbering{gobble}
+\begin{document}
+\input{sakib_sir_cover.tex}
+
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+\pagenumbering{arabic}
+\maketitle
+
+\vspace{-5em}
+
+\section*{Objectives}
+\addcontentsline{toc}{section}{Objectives}
+\begin{itemize}
+  \item Design and implement a PID controller for DC motor speed control in MATLAB Simulink.
+  \item Tune PID parameters and analyze the system response.
+\end{itemize}
+
+\section*{Theory}
+\addcontentsline{toc}{section}{Theory}
+This experiment investigates the speed control of a DC motor using closed-loop feedback with a focus on PID control, implemented in MATLAB Simulink~\cite{mathworks2023simulink}. The PID (Proportional-Integral-Derivative) controller is central to modern control systems due to its ability to combine fast response, zero steady-state error, and stability~\cite{ogata2010modern,nise2019control}.
+
+A PID controller adjusts the control input based on three terms:
+\begin{itemize}
+  \item \textbf{Proportional (P):} Corrects present error.
+  \item \textbf{Integral (I):} Eliminates accumulated past errors.
+  \item \textbf{Derivative (D):} Anticipates future error trends.
+\end{itemize}
+Tuning the gains ($K_p$, $K_i$, $K_d$) allows precise shaping of system response~\cite{astrom1995pid}.
+
+In this experiment, the DC motor model was controlled at a reference speed of \textbf{500 rpm}. Various controller configurations (P, I, PI, PD, PID) were tested, but emphasis was placed on analyzing the performance and tuning of the PID controller, demonstrating its effectiveness in achieving accurate and stable speed control~\cite{ogata2010modern}.
+
+
+\subsection*{Tools Used}
+\addcontentsline{toc}{subsection}{Tools Used}
+\begin{itemize}
+  \item \textbf{MATLAB Simulink:} Used for modeling, simulating, and analyzing the control system.
+  \item \textbf{\LaTeX:} Utilized for documentation and report preparation.
+\end{itemize}
+
+\section*{Working Principle}
+\addcontentsline{toc}{section}{Working Principle}
+The DC motor speed control system uses a PID controller. The actual speed is measured and compared to the reference, generating an error. The PID controller processes this error to adjust the motor input, ensuring the speed quickly reaches and maintains the desired value with minimal overshoot and steady-state error.
+
+\subsection*{Simulation Schematic}
+\addcontentsline{toc}{subsection}{Simulation Schematic}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{ckt.png}
+  \caption{Simulation schematic of the DC motor control system.}
+\end{figure}
+
+\subsection*{Output}
+\addcontentsline{toc}{section}{Output}
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.48\textwidth}
+    \subsubsection*{P Controller}
+    \addcontentsline{toc}{subsubsection}{P Controller}
+    \includegraphics[width=\linewidth]{1_p25.png}
+    \captionof{figure}{System response with P controller ($K_p = 25$).}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \subsubsection*{I Controller}
+    \addcontentsline{toc}{subsubsection}{I Controller}
+    \includegraphics[width=\linewidth]{2_i5.png}
+    \captionof{figure}{System response with I controller ($K_i = 5$).}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.48\textwidth}
+    \subsubsection*{PI Controller}
+    \addcontentsline{toc}{subsubsection}{PI Controller}
+    \includegraphics[width=\linewidth]{3_p25i3.png}
+    \captionof{figure}{System response with PI controller ($K_p = 25$, $K_i = 3$).}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \subsubsection*{PD Controller}
+    \addcontentsline{toc}{subsubsection}{PD Controller}
+    \includegraphics[width=\linewidth]{4_p25d4.png}
+    \captionof{figure}{System response with PD controller ($K_p = 25$, $K_d = 4$).}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.48\textwidth}
+    \subsubsection*{PID (Pre-Tuned) Controller}
+    \addcontentsline{toc}{subsubsection}{PID (Pre-Tuned) Controller}
+    \includegraphics[width=\linewidth]{5_p20i7d10.png}
+    \captionof{figure}{System response with PID controller (pre-tuned: $K_p = 20$, $K_i = 7$, $K_d = 10$).}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \subsubsection*{PID (Tuned) Controller}
+    \addcontentsline{toc}{subsubsection}{PID (Tuned) Controller}
+    \includegraphics[width=\linewidth]{6_tuned.png}
+    \captionof{figure}{System response with PID controller (tuned parameters).}
+  \end{minipage}
+\end{figure}
+
+\subsection*{PID Controller}
+\addcontentsline{toc}{subsection}{PID Controller}
+PID controller tuning involves adjusting $K_p$, $K_i$, and $K_d$ to balance response speed, overshoot, and steady-state error. In this experiment, the parameters were tuned using the PID Tuner tool in Simulink, which allowed for interactive adjustment and automatic optimization of the controller gains. This approach resulted in improved system performance and demonstrated the effectiveness of PID tuning~\cite{ogata2010modern}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{8_posttune.png}
+  \caption{PID controller (post-tuned).}
+\end{figure}
+
+\subsection*{Values for Controllers}
+The following table summarizes the values used for the different controller configurations tested during the experiment:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    Controller Type            & $K_p$ & $K_i$  & $K_d$ \\
+    \hline
+    P Controller               & 25    & -      & -     \\
+    I Controller               & -     & 5      & -     \\
+    PI Controller              & 25    & 3      & -     \\
+    PD Controller              & 25    & -      & 4     \\
+    PID (Pre-Tuned) Controller & 20    & 7      & 10    \\
+    PID (Tuned) Controller     & 69.77 & 281.32 & 1.54  \\
+    \hline
+  \end{tabular}
+  \caption{Controller parameter values used in the experiment.}
+\end{table}
+
+\section*{Discussion}
+\addcontentsline{toc}{subsection}{Discussion}
+The experiment demonstrated the effects of different controllers—P, I, PI, PD, and PID—on the speed control of a DC motor. The P controller provided a fast response but resulted in steady-state error. The I controller eliminated steady-state error but caused slower response and possible overshoot. The PI controller combined the benefits of both, improving steady-state accuracy and response time. The PD controller improved transient response and reduced overshoot but could not eliminate steady-state error. The PID controller, when properly tuned, offered the best overall performance by balancing speed, accuracy, and stability. Tuning the controller parameters ($K_p$, $K_i$, $K_d$) was essential to achieve optimal system behavior, and was done iteratively based on the system's response.
+
+\section*{Conclusion}
+\addcontentsline{toc}{subsection}{Conclusion}
+This experiment demonstrated the importance of feedback and controller tuning in DC motor speed control. While each controller type has strengths and weaknesses, the properly tuned PID controller achieved the most accurate and stable speed regulation with minimal error.
+
+
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{section}{References}
+\bibliography{ref}
+
+\end{document}
