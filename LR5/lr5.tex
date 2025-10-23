@@ -1,0 +1,201 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, total={6.5in, 9.4in}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/output/} }
+\usepackage{caption}
+\usepackage[english]{babel}
+\usepackage{titling}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{placeins}
+\usepackage{parskip}
+\usepackage{subcaption}
+
+% \usepackage{lipsum}
+
+\title{Experiment 5\\
+\textbf{Root Locus and Time Response Analysis of DC Motor under PID, PI, and PD Control}}
+\author{}
+\date{}
+
+\pagenumbering{gobble}
+\begin{document}
+\input{sakib_sir_cover.tex}
+
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+\pagenumbering{arabic}
+\maketitle
+
+\vspace{-5em}
+
+\section*{Objectives}
+\addcontentsline{toc}{section}{Objectives}
+\begin{itemize}
+  \item To analyze the root locus of a DC motor control system.
+  \item To implement and compare PID, PI, and PD controllers for speed regulation.
+  \item To evaluate system performance through time response analysis using MATLAB Simulink.
+\end{itemize}
+
+\section*{Theory}
+\addcontentsline{toc}{section}{Theory}
+
+\subsection*{Overview}
+\addcontentsline{toc}{subsection}{Overview}
+This experiment examines root-locus and time-domain behavior of an armature-controlled DC motor regulated by P, PI, PD, and PID controllers. Analysis uses the motor's electromechanical model, classical controller forms, and closed-loop pole placement via root-locus \cite{Ogata,Franklin}.
+
+\subsection*{DC motor model}
+\addcontentsline{toc}{subsection}{DC motor model}
+The armature-controlled motor couples electrical and mechanical dynamics:
+\[
+  L\frac{d i_a(t)}{dt} + R i_a(t) + K_e \omega(t) = v_a(t),
+  \qquad
+  J\frac{d\omega(t)}{dt} + B\omega(t) = K_t i_a(t),
+\]
+where $v_a$ is armature voltage, $i_a$ armature current, $\omega$ angular speed, and $R, L, J, B, K_e, K_t$ are motor constants. Taking Laplace transforms and eliminating $I_a(s)$ yields the transfer function from armature voltage to speed:
+\[
+  G(s)\;\equiv\;\frac{\Omega(s)}{V_a(s)}
+  =\frac{K_t}{(J s + B)(L s + R) + K_e K_t},
+\]
+which follows standard electromechanical modelling procedures \cite{Nise,Ogata}.
+
+\subsection*{Controller structures}
+\addcontentsline{toc}{subsection}{Controller structures}
+Standard linear controllers used are:
+\[
+  C_{PI}(s)=K_p+\frac{K_i}{s}=\frac{K_p\big(s+\frac{K_i}{K_p}\big)}{s},
+\]
+\[
+  C_{PD}(s)=K_p+K_d s = K_d\left(s+\frac{K_p}{K_d}\right).
+\]
+\[
+  C_{PID}(s)=K_p+\frac{K_i}{s}+K_d s =\frac{K_d\left(s^2 + s\left(\frac{K_p}{K_d}\right) + \frac{K_i}{K_d}\right)}{s}.
+\]
+These controller forms and their tuning implications are discussed in classical texts and PID literature \cite{Franklin,astrom}.
+
+\subsection*{Qualitative effects of actions}
+\addcontentsline{toc}{subsection}{Qualitative effects}
+\begin{enumerate}
+  \item Proportional (P): raises gain — faster response, reduces but doesn't eliminate steady‑state error for type‑0 systems.
+  \item Integral (I): adds a pole at 0 — eliminates step steady‑state error, at expense of phase margin.
+  \item Derivative (D): adds phase lead — improves damping and lowers overshoot, but amplifies high‑frequency noise.
+\end{enumerate}
+
+\subsection*{Closed-loop form and design approach}
+\addcontentsline{toc}{subsection}{Closed-loop form}
+For unity feedback the closed-loop transfer from reference $R(s)$ to output $\Omega(s)$ is
+\[
+  T(s)=\frac{C(s)G(s)}{1+C(s)G(s)},
+\]
+with characteristic equation 1+C(s)G(s)=0. Design proceeds by inspecting the root locus of G(s) (and the effect of controller zeros/poles) and selecting controller gains so closed‑loop poles meet desired transient specifications \cite{Ogata,Franklin}.
+
+\subsection*{Design criteria and motor data}
+\addcontentsline{toc}{subsection}{Design criteria and motor data}
+Motor parameters used in this lab:
+\[
+  J=0.01,\quad B=0.1,\quad K_e=K_t=0.01,\quad R=1,\quad L=0.5.
+\]
+Performance targets:
+settling time $T_s \approx 1$ s (2\% criterion), and maximum overshoot $M_p < 5\%$ \cite{MATLAB}.
+
+\subsection*{Time-response metrics}
+\addcontentsline{toc}{subsection}{Time-response metrics}
+\begin{itemize}
+  \item Rise time $t_r$: time to go from 10\% to 90\% of final value.
+  \item Peak time $t_p$: time to the first maximum peak.
+  \item Settling time $T_s$: time to remain within a 2\% (or 5\%) band.
+  \item Percent overshoot $M_p$: $\dfrac{\text{peak}-\text{steady}}{\text{steady}}\times100\%$.
+  \item Steady‑state error $e_{ss}$: final deviation from reference (reduced by integral action).
+\end{itemize}
+
+
+\subsection*{Tools Used}
+\addcontentsline{toc}{subsection}{Tools Used}
+\begin{itemize}
+  \item \textbf{MATLAB}
+  \item \textbf{\LaTeX}
+\end{itemize}
+
+\section*{Working Principle}
+\addcontentsline{toc}{section}{Working Principle}
+
+\subsection*{Code}
+\addcontentsline{toc}{subsection}{Code}
+\begin{multicols}{2}
+  \inputminted[fontsize=\small, linenos, breaklines]{matlab}{assets/lr5.m}
+\end{multicols}
+
+\subsection*{$K_P, K_I, K_D$ Gains}
+\addcontentsline{toc}{subsection}{$K_P, K_I, K_D$ Gains}
+\begin{table}[H]
+  \centering
+
+  \label{tab:controller_gains}
+  \begin{tabular}{l r r r}
+    \hline
+    Controller & $K_p$     & $K_i$    & $K_d$ \\
+    \hline
+    PI         & 23.665    & 43.66192 & 0     \\
+    PD         & 530.43375 & 0        & 91.85 \\
+    PID        & 594.048   & 1971.592 & 47.6  \\
+    \hline
+  \end{tabular}
+  \caption{Controller gains}
+\end{table}
+
+\subsection*{Output}
+\addcontentsline{toc}{section}{Output}
+\input{output.tex}
+
+\subsection*{Code Output}
+\addcontentsline{toc}{section}{Code Output}
+\begin{table}[H]
+  \centering
+  \label{tab:stepinfo}
+  \footnotesize
+  \begin{tabular}{l r r r}
+    \hline
+    Metric             & PI     & PD     & PID    \\
+    \hline
+    Rise time (s)      & 0.3343 & 0.0123 & 0.0226 \\
+    Transient time (s) & 0.5039 & 0.0263 & 0.0380 \\
+    Settling time (s)  & 0.5039 & 0.0263 & 0.0380 \\
+    Settling min       & 0.9073 & 0.8870 & 0.9052 \\
+    Settling max       & 1.0166 & 0.9764 & 1.0134 \\
+    Overshoot (\%)     & 1.6559 & 0.0000 & 1.3382 \\
+    Undershoot (\%)    & 0.0000 & 0.0000 & 0.0000 \\
+    Peak               & 1.0166 & 0.9764 & 1.0134 \\
+    Peak time (s)      & 0.6756 & 0.1936 & 0.1543 \\
+    \hline
+  \end{tabular}
+  \caption{Step-response metrics for PI, PD, and PID controllers}
+\end{table}
+
+\section*{Discussion}
+\addcontentsline{toc}{section}{Discussion}
+Root‑locus guided controller tuning produced the expected trade‑offs between speed and accuracy. Key observations:
+\begin{itemize}
+  \item PI: removed steady‑state error; $Ts \approx 0.50 \mathrm{s}$, $M_p \approx 1.66\%$.
+  \item PD: fastest transients but residual offset; $Ts \approx 0.03 \mathrm{s}$, $final \approx 0.976$.
+  \item PID: balanced performance—fast settling, low overshoot, near‑zero steady‑state error; $Ts \approx 0.04 \mathrm{s}$, $M_p \approx 1.34\%$.
+\end{itemize}
+Recommendation: add a low‑pass filter on the derivative path and evaluate robustness to parameter variations.
+
+\section*{Conclusion}
+\addcontentsline{toc}{subsection}{Conclusion}
+Design objectives (overshoot < 5\% and acceptable settling) were met by the tuned controllers: the PI controller effectively eliminated steady‑state error while maintaining low overshoot and a short settling time; the PD controller accelerated the transient response and reduced overshoot but exhibited a residual steady‑state error due to lack of integral action; and the PID controller provided a balanced compromise with fast settling, low overshoot, and minimal steady‑state error. Recommendations: implement derivative action with a practical low‑pass filter to limit noise amplification and evaluate robustness to plant uncertainty and parameter variation in future work.
+
+
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{section}{References}
+\bibliography{ref}
+
+\end{document}

@@ -1,0 +1,214 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, total={6in, 9in}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/output/} }
+\usepackage{caption}
+\usepackage[english]{babel}
+\usepackage{titling}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{placeins}
+\usepackage{parskip}
+
+% \usepackage{lipsum}
+
+\title{Experiment 4\\
+\textbf{Investigate the Forward Kinematics of a 2 DOF Manipulator Using Simscape and Robotic
+        System Toolbox}}
+\author{}
+\date{}
+
+\pagenumbering{gobble}
+\begin{document}
+\input{badal_sir_cover.tex}
+
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+\pagenumbering{arabic}
+\maketitle
+
+\vspace{-5em}
+
+\section*{Objectives}
+\addcontentsline{toc}{section}{Objectives}
+\begin{enumerate}
+    \item To model a 2 DOF manipulator using Simscape Multibody.
+    \item To compute forward kinematics using Robotics System Toolbox and visualize manipulator movement.
+\end{enumerate}
+
+\section*{Theory}
+Forward kinematics computes the end‑effector pose from known joint variables. For a planar 2‑DOF manipulator with revolute joints \(\theta_1,\theta_2\) and link lengths \(L_1,L_2\) (Figure~\ref{fig:fwdk}),
+\[
+    x = L_1\cos\theta_1 + L_2\cos(\theta_1+\theta_2),\qquad
+    y = L_1\sin\theta_1 + L_2\sin(\theta_1+\theta_2).
+\]
+Simscape Multibody is used for physics‑based simulation (rigid links and joints) while the Robotics System Toolbox builds a corresponding rigidBodyTree for analytic kinematics and cross‑validation \cite{Craig2005,Niku2001}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{man.png}
+    \caption{Planar 2‑DOF manipulator diagram.}
+\end{figure}
+
+\section*{Tools and Packages}
+\addcontentsline{toc}{section}{Tools and Packages}
+\begin{itemize}
+    \item \textbf{MATLAB}: Primary environment for computation and scripting \cite{MathWorksMATLAB}.
+    \item \textbf{Simscape Multibody}: Physics‑based multibody modeling and simulation \cite{MathWorksSimscape}.
+    \item \textbf{Robotics System Toolbox}: rigidBodyTree, kinematics and visualization utilities for analytic FK \cite{MathWorksRobotics}.
+    \item \textbf{Simulink}: Time‑domain simulation and integration with Simscape models \cite{MathWorksSimulink}.
+\end{itemize}
+
+These tools together offer an integrated workflow for constructing, simulating, and validating the manipulator’s kinematic and dynamic behavior.
+
+\section*{Manipulator Designing}
+\addcontentsline{toc}{section}{Manipulator Designing}
+
+Table 1 summarizes the geometric dimensions used to create the visual solids in the Simscape model and to approximate link inertial properties for simulation and visualization.
+
+\begin{table}[H]
+    \centering
+    \label{tab:geom}
+    \small
+    \resizebox{\textwidth}{!}{%
+        \begin{tabular}{@{}l l l@{}}
+            \hline
+            Component    & Geometry                                        & Notes                           \\
+            \hline
+            Base         & Radius = 0.02,\; Height = 0.04                  & Cylindrical mounting base       \\
+            Link 1       & Length × Width × Thickness = 0.40 × 0.03 × 0.03 & Rectangular rod visual geometry \\
+            Link 2       & Length × Width × Thickness = 0.20 × 0.03 × 0.03 & Rectangular rod visual geometry \\
+            End‑effector & Length × Width × Thickness = 0.04 × 0.03 × 0.03 & Mounted at distal end of Link 2 \\
+            \hline
+        \end{tabular}%
+    }
+    \caption{Physical dimensions of base, links and end‑effector}
+\end{table}
+
+Table 2 summarizes joint types and their commanded ranges used in the Simscape kinematic chain; these limits reflect the intended workspace for the validation cases.
+
+\begin{table}[H]
+    \centering
+    \label{tab:joints}
+    \begin{tabular}{@{}l l l@{}}
+        \hline
+        Joint                 & Type          & Range                                   \\
+        \hline
+        Base -- Link1         & Revolute      & $0^\circ$ -- $180^\circ$                \\
+        Link1 -- Link2        & Revolute      & $0^\circ$ -- $180^\circ$                \\
+        Link2 -- End‑effector & Fixed (mount) & Fixed (end effector attached to Link 2) \\
+        \hline
+    \end{tabular}
+    \caption{Joint definitions and ranges}
+\end{table}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fwdK.png}
+    \caption{Planar 2‑DOF manipulator kinematic diagram used for analytic forward kinematics.}
+    \label{fig:fwdk}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{2DOFMan.png}
+    \caption{Full Simscape model of the 2‑DOF manipulator (assembly view). This model was assembled in Simscape Multibody and used for the simulation runs.}
+    \label{fig:2dof}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{base.png}\hfill
+    \includegraphics[width=0.5\textwidth]{endef.png}
+    \caption{Left: base and ground connection used for the manipulator (\ref{fig:2dof} shows the full assembly). Right: end‑effector block and mounting interface used in the Simscape model.}
+    \label{fig:base}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{link1.png}\hfill
+    \includegraphics[width=0.5\textwidth]{link2.png}
+    \caption{Left: Link 1 visual geometry and coordinate frames. Right: Link 2 visual geometry and coordinate frames. The solids represent thin rectangular bodies used for visualization in Mechanics Explorer.}
+    \label{fig:links}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{testCase1.png}
+    \caption{Representative simulation snapshot (joint configuration and end‑effector pose) used as a test case for validating the forward‑kinematics computations.}
+    \label{fig:testcase}
+\end{figure}
+
+The manipulator is a planar 2‑DOF serial robot with revolute joints $q_1,q_2$. Figures \ref{fig:2dof}--\ref{fig:testcase} show the assembly and an example snapshot.
+
+Simscape implementation:
+\begin{itemize}
+    \item Links use \texttt{Solid} blocks (thin rectangular solids) and two serial \texttt{Revolute Joint} blocks.
+    \item Joint inputs $(q_1,q_2)$ drive the model; \texttt{Joint Position Sensor} blocks provide measured angles $(q_{1m},q_{2m})$ for logging.
+\end{itemize}
+
+Verification:
+\begin{itemize}
+    \item Measured angles feed a MATLAB/Robotics System Toolbox routine that builds a \texttt{rigidBodyTree} (matching DH parameters) and computes the end‑effector pose $(x,y)$.
+    \item The toolbox pose is compared with the Simscape pose to validate the forward kinematics.
+\end{itemize}
+
+\section*{Simulation Output \& Results}
+\addcontentsline{toc}{section}{Simulation Output \& Results}
+
+\subsection*{Code}
+\addcontentsline{toc}{subsection}{Code}
+\begin{minted}[fontsize=\small]{matlab}
+T=0.001;
+[Manipulator, Info]=importrobot('Test_case_1');
+\end{minted}
+
+\subsection*{Simulation Output}
+\addcontentsline{toc}{subsection}{Simulation Output}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{link_angles.png}
+    \caption{Joint angle time histories recorded from the scope during simulation (example run). Curves correspond to $q_1$ and $q_2$ and are used to verify the timing and magnitude of the commanded motion used for the snapshots in Figure~\ref{fig:snapshots}.}
+    \label{fig:angles}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{a.png}\hfill
+    \includegraphics[width=0.48\textwidth]{b.png}\\[6pt]
+    \includegraphics[width=0.48\textwidth]{c.png}\hfill
+    \includegraphics[width=0.48\textwidth]{d.png}
+    \caption{Simulation snapshots showing the manipulator at four representative timestamps. The sequence illustrates the manipulator moving through the commanded joint configurations; coordinate axes (lower-left) show the world frame orientation.}
+    \label{fig:snapshots}
+\end{figure}
+
+
+\subsection*{Output Analysis}
+\addcontentsline{toc}{subsection}{Output Analysis}
+The snapshots (Figure~\ref{fig:snapshots}) show the manipulator following the planned configurations and agree with the forward‑kinematics model. The joint angle plot (Figure~\ref{fig:angles}) confirms the commanded timings and amplitudes for $q_1$ and $q_2$. Small deviations (millimetre scale) are attributed to numerical integration and approximate inertial/geometric properties and are within acceptable tolerances.
+
+\section*{Discussion}
+\addcontentsline{toc}{section}{Discussion}
+The Simscape and rigidBodyTree results agree within millimetre‑scale tolerances across the tested configurations. Remaining discrepancies are mainly due to numerical integration, simplified inertial/visual geometry, and sensor logging quantisation. These effects can be mitigated by refining inertial parameters, increasing solver accuracy, and synchronising logging timestamps. Overall, the analytic forward‑kinematics implementation is validated against the physics‑based model for the examined workspace.
+
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+
+The 2‑DOF manipulator was modelled in Simscape Multibody and represented as a rigidBodyTree in the Robotics System Toolbox. Analytic forward kinematics agreed with the Simscape results for the tested configurations; refining parameters and sensor fidelity is recommended to reduce remaining discrepancies.
+
+
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{section}{References}
+\bibliography{ref}
+
+\end{document}

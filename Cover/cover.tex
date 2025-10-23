@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, total={6.5in, 9.4in}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/output/} }
+\usepackage{caption}
+\usepackage[english]{babel}
+\usepackage{titling}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{minted}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{placeins}
+
+\usepackage{parskip}
+
+% \usepackage{lipsum}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\input{mte_sir_cover.tex}
+\pagebreak
+
+\begin{center}
+    {\Large\bfseries Table of Contents}\\[3em]
+    \small
+    \begin{tabular}{|>{\centering\arraybackslash}p{0.05\textwidth}|>{\raggedright\arraybackslash}p{0.70\textwidth}|>{\centering\arraybackslash}p{0.18\textwidth}|}
+        \hline
+        \textbf{Exp No.} & \textbf{Experiment Name}                                                                            & \textbf{Date}      \\ \hline
+        1                & Study on Industrial Robotic Trainer Kit With Different Functionality; Pick and Place Operation      & July 8, 2025       \\ \hline
+        2                & Experiment on Control Controllability and Observability of a System                                 & July 22, 2025      \\ \hline
+        3                & Speed Control of DC Motor Using Closed Loop Feedback Control With PID Controller                    & August 12, 2025    \\ \hline
+        4                & Investigate the Forward Kinematics of a 2 DOF Manipulator Using Simscape and Robotic System Toolbox & September 02, 2025 \\ \hline
+        5                & Root Locus and Time Response Analysis of DC Motor under PID, PI, and PD Control                     & October 15, 2025   \\ \hline
+    \end{tabular}
+\end{center}
+
+\end{document}
